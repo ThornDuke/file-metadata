@@ -18,13 +18,19 @@ app.get("/greetings", (req, res) => {
 });
 
 app.use("/api/fileanalyse", upload.single("upfile"), (req, res, next) => {
-  const { fieldname, originalname, encoding, mimetype, destination, filename, path, size } =
-    req.file;
-  req.multerResponse = {
-    name: originalname,
-    type: mimetype,
-    size,
-  };
+  if (req.file) {
+    const { originalname, mimetype, size } = req.file;
+
+    req.multerResponse = {
+      name: originalname,
+      type: mimetype,
+      size,
+    };
+  } else {
+    req.multerResponse = {
+      error: "no file has been selected.",
+    };
+  }
   next();
 });
 
